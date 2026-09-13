@@ -1,0 +1,57 @@
+# The four report importers, extracted from `oaRustCore` and filed as a softapp.
+#
+# Owns: building the importer library and the four `test_*` runners that read
+# `test_data/` beside them. It reads somebody else's report format and publishes
+# a record; it addresses no hardware, which is why it lives under `APK:Softapps/`
+# and not in `APK:BareMetal/Core/` where it was compiled until PLAN-603.01.
+#
+# Must not: gain a `[workspace]` key. No Cargo.toml sits above this directory, so
+# the crate is its own workspace root already, and declaring the section would
+# claim any crate a later session files beside it under `APK:Softapps/`.
+#
+# `path = "mod.rs"` rather than a `src/` layout: the numbered folders are the
+# published order of the four sources and `mod.rs` reaches them with `#[path]`
+# attributes relative to itself. A `src/lib.rs` would put `../` in front of all
+# five of those and buy nothing.
+#
+# `oaRustCore` depends on this crate by path and re-exports it as
+# `data_migration`, so `oaRustCore::data_migration::ias_importer::…` — which is
+# what `orchestrator/src/services/visa.rs` calls — still resolves.
+
+[package]
+name = "apkaudio-data-migration"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "apkaudio_data_migration"
+path = "mod.rs"
+
+[dependencies]
+apkaudio-contracts = { path = "../../../../APK:BareMetal/SRC/contracts/rust" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+csv = "1.3"
+scraper = "0.18"
+zip = "0.6"
+rumqttc = "0.24"
+
+# Each runner declares `mod <source>_importer;` against the importer sitting
+# beside it, so it compiles the parser rather than linking this crate's lib.
+# They resolve `test_data/` through `env!("CARGO_MANIFEST_DIR")`, which is this
+# directory — the reason the move does not need to touch them.
+[[bin]]
+name = "test_ias_importer"
+path = "1_IAS/test_ias_importer.rs"
+
+[[bin]]
+name = "test_soundbase_importer"
+path = "2_Soundbase/test_soundbase_importer.rs"
+
+[[bin]]
+name = "test_wwb_importer"
+path = "3_Wireless_Workbench/test_wwb_importer.rs"
+
+[[bin]]
+name = "test_csv_pattern_importer"
+path = "4_CSV/test_csv_pattern_importer.rs"
