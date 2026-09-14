@@ -42,16 +42,16 @@ rumqttc = "0.24"
 # directory — the reason the move does not need to touch them.
 [[bin]]
 name = "test_ias_importer"
-path = "1_IAS/test_ias_importer.rs"
+path = "../DATATYPE.wireless.IAS/test_ias_importer.rs"
 
 [[bin]]
 name = "test_soundbase_importer"
-path = "2_Soundbase/test_soundbase_importer.rs"
+path = "../DATATYPE.wireless.SOUNDbase/test_soundbase_importer.rs"
 
 [[bin]]
 name = "test_wwb_importer"
-path = "3_Wireless_Workbench/test_wwb_importer.rs"
+path = "../DATATYPE.wireless.SHUREwirelessWorkbench/test_wwb_importer.rs"
 
 [[bin]]
 name = "test_csv_pattern_importer"
-path = "4_CSV/test_csv_pattern_importer.rs"
+path = "../DATATYPE.wireless.CSV/test_csv_pattern_importer.rs"
