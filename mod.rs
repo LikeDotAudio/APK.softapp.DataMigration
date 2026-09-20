@@ -23,16 +23,16 @@
 
 //! Data Migration Rust module aggregator.
 
-#[path = "../DATATYPE.wireless.IAS/ias_importer.rs"]
+#[path = "../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs"]
 pub mod ias_importer;
 
-#[path = "../DATATYPE.wireless.SOUNDbase/soundbase_importer.rs"]
+#[path = "../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs"]
 pub mod soundbase_importer;
 
-#[path = "../DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs"]
+#[path = "../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs"]
 pub mod wwb_importer;
 
-#[path = "../DATATYPE.wireless.CSV/csv_importer.rs"]
+#[path = "../../DATATYPE/DATATYPE.wireless.CSV/csv_importer.rs"]
 pub mod csv_importer;
 
 #[path = "EDITOR.Data editor/data_editor.rs"]
