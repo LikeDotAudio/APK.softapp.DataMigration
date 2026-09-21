@@ -2,12 +2,12 @@
 #
 # Owns: building the importer library and the four `test_*` runners that read
 # `test_data/` beside them. It reads somebody else's report format and publishes
-# a record; it addresses no hardware, which is why it lives under `APK:Softapps/`
-# and not in `APK:BareMetal/Core/` where it was compiled until PLAN-603.01.
+# a record; it addresses no hardware, which is why it lives under `Softapps/`
+# and not in `BareMetal/Core/` where it was compiled until PLAN-603.01.
 #
 # Must not: gain a `[workspace]` key. No Cargo.toml sits above this directory, so
 # the crate is its own workspace root already, and declaring the section would
-# claim any crate a later session files beside it under `APK:Softapps/`.
+# claim any crate a later session files beside it under `Softapps/`.
 #
 # `path = "mod.rs"` rather than a `src/` layout: the numbered folders are the
 # published order of the four sources and `mod.rs` reaches them with `#[path]`
@@ -28,7 +28,7 @@ name = "apkaudio_data_migration"
 path = "mod.rs"
 
 [dependencies]
-apkaudio-contracts = { path = "../../../../POD:APK_THICK/APK:BareMetal/SRC/contracts/rust" }
+apkaudio-contracts = { path = "../../../../POD:THICK/BareMetal/SRC/contracts/rust" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 csv = "1.3"
