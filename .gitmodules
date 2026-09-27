@@ -1,0 +1,6 @@
+[submodule "Documentation Management"]
+	path = Documentation Management
+	url = https://github.com/LikeDotAudio/APK.softapp.Documentation-Management.git
+[submodule "Download folder cleanup"]
+	path = Download folder cleanup
+	url = https://github.com/LikeDotAudio/APK.softapp.Download-folder-cleanup.git
