@@ -22,7 +22,7 @@ A standalone Git repository mounted at `PODS/POD.THIN/Softapps/MANAGEMENT_AND_UT
 | `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/DataMigration/Soundbase/ImportedData` |
 | `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | Wireless Workbench `.shw` archive | `…/DataMigration/WWB/ImportedData` |
 | `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/csv_importer.rs` | pattern-recognised CSV | `…/DataMigration/CSV/ImportedData` |
-| `data_editor` | `EDITOR.Data editor/data_editor.rs` | a `DataEditCommand`; a marker CSV | nothing (returns values) |
+| `data_editor` | `EDITOR.Data editor/data_editor.rs` | a `DataEditCommand` against a JSON-array dataset (append / modify / delete by `"id"`); a marker CSV | nothing (writes the dataset file; returns values) |
 
 Topics are built from the contracts crate (`apkaudio_contracts::topics::data_migration`, `PODS/POD.THICK/NODE.BareMetal/SRC/contracts/rust`), never typed out. Each importer publishes to the loopback broker on the contract's default port, with the broker credentials from `apkaudio_contracts::broker_auth`.
 
@@ -36,7 +36,8 @@ The four `test_*` runners are `[[bin]]` targets declared in `Cargo.toml`, with t
 
 ## 🚀 Usage & Integration
 * **Build**: `cargo build` in this directory (its own workspace root; no `[workspace]` key on purpose). Builds clean.
-* **Runners**: `cargo run --bin test_ias_importer` (and the other three). Today all four exit non-zero — see below.
+* **Runners**: `cargo run --bin test_ias_importer` (and the other three) — each parses the fixture in its `DATATYPE.wireless.*/test_data/`, publishes, and exits 0 (2026-10-30).
+* **Tests**: `cargo test --lib` — the data editor's two unit tests.
 * **Web Portal Entry**: none of its own. The root `display.json` (`"entry": "main.py"`) is an old template card with no `main.py` behind it; the UI is the frames listed above.
 * **Remote Repository**: `https://github.com/LikeDotAudio/APK.softapp.DataMigration.git`
 
@@ -50,10 +51,14 @@ The principles the code follows, and where it shows them:
 - **It reads; it addresses no hardware.** That is why the crate sits under `Softapps/` and not in `BareMetal/Core/`. — `Cargo.toml` (header)
 - **Keep going on an error.** Parsing does not depend on the bus: the publish waits a bounded time for a broker (5 s for IAS and WWB, 3 s for Soundbase and CSV) and the parsed result is returned whether or not anything acked. — `publish_to_mqtt` in each `*_importer.rs`
 - **No absolute fixture paths.** Runners resolve fixtures through `env!("CARGO_MANIFEST_DIR")`, and report a missing file with a non-zero exit instead of exiting 0. — the four `test_*.rs`
+- **Say what was done, or fail.** The data editor counts only records it wrote, rewrites a dataset by temp file + rename, and returns `Err` for an unknown operation, a missing row, a duplicate append or a file that is not a JSON array. — `process_data_editor_command` in `EDITOR.Data editor/data_editor.rs`
 - **Where it does not hold:**
-  - The runners look for fixtures at `<this crate>/DataMigration/<N_source>/test_data/…`, which does not exist; the fixtures are in each `DATATYPE.wireless.*/test_data/`. All four runners fail on a missing file (exit 1, 1, 1, 101).
-  - `data_editor::process_data_editor_command` writes nothing: it reports `status: "success"` and `records_modified: 1` for `append` / `modify` without touching the file — against *Refusal over fabrication*. Nothing in the tree calls it.
-  - `mod.rs`'s header still says the runners are `[[bin]]` targets of `oaRustCore` and names `APK:FrontEnd/Gui_Frames/3_Data_Migration/`; both have moved (runners are this crate's bins; frames are under `WEB.Frontend-Assets/SRC/FrontEnd/`).
+  - Nothing compares a frame's declared headers with the fields its importer emits; the `check.sh datamigration` lane that did is gone with `check.sh`.
+  - The runners publish retained records to the live broker as a side effect of a test run.
+
+## 📚 Wiki
+
+The depth is in [Documentation/README.md](Documentation/README.md): [principles](Documentation/%F0%9F%8F%9BPhilosophy/PRINCIPLES.md), [architecture](Documentation/%F0%9F%A7%A9Manual%20and%20Artifacts/ARCHITECTURE.md), [delivery](Documentation/%F0%9F%8C%8DPublishing/DELIVERY.md).
 
 <!-- wiki:smoke -->
 **Smoke test** — ✅ PASS 1/1 since 2026-10-30 12:51 EDT — [results](Documentation/%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md)
