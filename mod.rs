@@ -34,7 +34,7 @@ pub mod soundbase_importer;
 #[path = "../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs"]
 pub mod wwb_importer;
 
-#[path = "../../DATATYPE/DATATYPE.wireless.CSV/csv_importer.rs"]
+#[path = "../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs"]
 pub mod csv_importer;
 
 #[path = "EDITOR.Data editor/data_editor.rs"]

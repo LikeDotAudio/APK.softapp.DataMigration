@@ -53,4 +53,4 @@ path = "../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/test_wwb_importe
 
 [[bin]]
 name = "test_csv_pattern_importer"
-path = "../../DATATYPE/DATATYPE.wireless.CSV/test_csv_pattern_importer.rs"
+path = "../../DATATYPE/DATATYPE.wireless.CSV/SRC/test_csv_pattern_importer.rs"

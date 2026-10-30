@@ -34,7 +34,7 @@ frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IA
 | `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `…/DataMigration/IAS/ImportedData` |
 | `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/Soundbase/ImportedData` |
 | `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | WWB `.shw` (zip) | `…/WWB/ImportedData` |
-| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/csv_importer.rs` | pattern-recognised CSV | `…/CSV/ImportedData` |
+| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/CSV/ImportedData` |
 | `data_editor` | `EDITOR.Data editor/data_editor.rs` | `DataEditCommand` on a JSON-array dataset; a marker CSV | writes the dataset file |
 
 ### The data editor

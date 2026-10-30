@@ -21,7 +21,7 @@ A standalone Git repository mounted at `PODS/POD.THIN/Softapps/MANAGEMENT_AND_UT
 | `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `APK.audio/System/DataMigration/IAS/ImportedData` |
 | `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/DataMigration/Soundbase/ImportedData` |
 | `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | Wireless Workbench `.shw` archive | `…/DataMigration/WWB/ImportedData` |
-| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/csv_importer.rs` | pattern-recognised CSV | `…/DataMigration/CSV/ImportedData` |
+| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/DataMigration/CSV/ImportedData` |
 | `data_editor` | `EDITOR.Data editor/data_editor.rs` | a `DataEditCommand` against a JSON-array dataset (append / modify / delete by `"id"`); a marker CSV | nothing (writes the dataset file; returns values) |
 
 Topics are built from the contracts crate (`apkaudio_contracts::topics::data_migration`, `PODS/POD.THICK/NODE.BareMetal/SRC/contracts/rust`), never typed out. The importers themselves publish nothing: the orchestrator's data-migration daemon publishes each result on the broker it was started with.
