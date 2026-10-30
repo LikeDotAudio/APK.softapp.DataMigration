@@ -2,7 +2,7 @@
 
 ## Build
 
-`cargo build` here (Rust 2021; deps `apkaudio-contracts` by path, `serde`, `csv`, `scraper`, `zip`, `rumqttc`).
+`cargo build` here (Rust 2021; deps `apkaudio-contracts` by path, `serde`, `csv`, `scraper`, `zip`).
 
 ## Test
 
