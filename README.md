@@ -54,3 +54,7 @@ The principles the code follows, and where it shows them:
   - The runners look for fixtures at `<this crate>/DataMigration/<N_source>/test_data/…`, which does not exist; the fixtures are in each `DATATYPE.wireless.*/test_data/`. All four runners fail on a missing file (exit 1, 1, 1, 101).
   - `data_editor::process_data_editor_command` writes nothing: it reports `status: "success"` and `records_modified: 1` for `append` / `modify` without touching the file — against *Refusal over fabrication*. Nothing in the tree calls it.
   - `mod.rs`'s header still says the runners are `[[bin]]` targets of `oaRustCore` and names `APK:FrontEnd/Gui_Frames/3_Data_Migration/`; both have moved (runners are this crate's bins; frames are under `WEB.Frontend-Assets/SRC/FrontEnd/`).
+
+<!-- wiki:smoke -->
+**Smoke test** — ✅ PASS 1/1 since 2026-10-30 12:51 EDT — [results](Documentation/%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md)
+<!-- /wiki:smoke -->
