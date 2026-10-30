@@ -7,16 +7,18 @@
 //! `1_IAS` (HTML), `2_Soundbase` (CSV), `3_Wireless_Workbench` (.shw archive),
 //! `4_CSV` (pattern-recognised CSV) — and one shape out of all of them.
 //!
-//! The rule the gate enforces: a JSON frame under
-//! `APK:FrontEnd/Gui_Frames/3_Data_Migration/` declares a topic and a list of
-//! headers, and the importer here must emit a field for every header it
-//! declares. `check.sh datamigration` compares the two, and its lane comment
-//! says why it has to: "A header with no field on the record renders as a blank
-//! column: no error, no log line, and it reads as a broken parser."
+//! The rule the frames set: a JSON frame under
+//! `PODS/POD.THIN/WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/`
+//! declares a topic and a list of headers, and the importer here must emit a
+//! field for every header it declares. A header with no field on the record
+//! renders as a blank column: no error, no log line, and it reads as a broken
+//! parser. The `check.sh datamigration` lane that compared the two went with
+//! check.sh; nothing compares them today.
 //!
 //! Must not: hardcode an absolute path to a fixture. The four `test_*.rs`
-//! runners are `[[bin]]` targets of `oaRustCore` and resolve `test_data/`
-//! through `env!("CARGO_MANIFEST_DIR")`. They previously named
+//! runners are `[[bin]]` targets of this crate (`Cargo.toml`, files under
+//! `Softapps/DATATYPE/`) and resolve `test_data/` through
+//! `env!("CARGO_MANIFEST_DIR")`. They previously named
 //! `/home/anthony/.../APK:BareMetal/...`, a directory the rename removed, and
 //! each printed the failure to stderr and exited 0 — so they could not have
 //! failed a gate even while every one of them was reading nothing.
