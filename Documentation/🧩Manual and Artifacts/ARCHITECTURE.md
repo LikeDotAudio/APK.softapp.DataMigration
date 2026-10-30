@@ -20,16 +20,16 @@ subscribes to `APK.audio/System/DataMigration/+/FilePath` and hands each file to
 frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IAS,2_Soundbase,3_Wireless_Workbench,4_CSV})
    └─ publishes APK.audio/System/DataMigration/<source>/FilePath   (a path, or file text/bytes)
         └─ orchestrator data_migration daemon (own client id, own thread)
-             └─ oaRustCore::data_migration::<source>_importer::parse_*()
-                  ├─ returns the parse result
-                  └─ publish_to_mqtt(): APK.audio/System/DataMigration/<source>/ImportedData  (retained, QoS 1,
-                     loopback broker, credentials from apkaudio_contracts::broker_auth, bounded ack wait)
-                        └─ the frame renders the record's fields under its declared headers
+             ├─ oaRustCore::data_migration::<source>_importer::parse_*()  — pure: parses, returns, publishes nothing
+             └─ the daemon publishes the result: APK.audio/System/DataMigration/<source>/ImportedData
+                (retained, QoS 1, on the broker the orchestrator was started with — services/data_migration.rs)
+                   └─ the frame renders the record's fields under its declared headers
+                      (tests/frame_headers.rs, `check.sh datamigration`: every header is a field)
 ```
 
 ## Modules
 
-| Module | Source (`#[path]` from `mod.rs`) | Reads | Publishes |
+| Module | Source (`#[path]` from `mod.rs`) | Reads | Its result is published (by the daemon) on |
 |---|---|---|---|
 | `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `…/DataMigration/IAS/ImportedData` |
 | `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/Soundbase/ImportedData` |

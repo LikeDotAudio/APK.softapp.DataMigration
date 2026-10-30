@@ -12,8 +12,8 @@
 //! declares a topic and a list of headers, and the importer here must emit a
 //! field for every header it declares. A header with no field on the record
 //! renders as a blank column: no error, no log line, and it reads as a broken
-//! parser. The `check.sh datamigration` lane that compared the two went with
-//! check.sh; nothing compares them today.
+//! parser. `tests/frame_headers.rs` compares the two against each source's
+//! fixture; the root `check.sh datamigration` lane runs it.
 //!
 //! Must not: hardcode an absolute path to a fixture. The four `test_*.rs`
 //! runners are `[[bin]]` targets of this crate (`Cargo.toml`, files under

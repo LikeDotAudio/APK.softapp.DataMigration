@@ -6,9 +6,11 @@
 
 ## Test
 
-- `cargo test --lib` — 2 passed (data editor), 2026-10-30.
-- `cargo run --bin test_*` — the four runners each parse their `DATATYPE.wireless.*/test_data/` fixture and exit 0
-  (2026-10-30); they publish to the live broker if one is up.
+- `cargo test --lib` — the data editor's and the importers' unit tests.
+- `cargo test --test frame_headers` — every header the four `Gui_Frames/3_Data_Migration/` tables declare is a
+  field of a record parsed from that source's fixture; root `.apk.scripts/check.sh datamigration` runs it.
+- `cargo run --bin test_*` — the four runners each parse their `DATATYPE.wireless.*/test_data/` fixture and exit 0;
+  the importers publish nothing, so a run never touches the broker.
 - The importers' own unit tests sit in the `DATATYPE` files and run with the crate.
 - Monorepo smoke run: [SMOKE.md](../%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md).
 
@@ -30,5 +32,4 @@ Rebuild the node image (`up-stack.sh` for NODE.BareMetal). Push and pointer bump
 
 ## Not automated
 
-- No CI runs `cargo test` or the runners.
-- No check ties the frames' headers to the importers' fields.
+- No CI runs `cargo test` or the runners; the header check runs in the local `check.sh datamigration` lane.
