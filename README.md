@@ -48,7 +48,7 @@ The principles the code follows, and where it shows them:
 - **Many formats in, one record out.** Four parsers, one channel shape, one topic family. — `mod.rs`, the four `*_importer.rs`
 - **Topics come from the contract.** Every importer calls `topics::data_migration(source, "ImportedData")` instead of spelling the string. — `*_importer.rs` (`*_mqtt_topic`)
 - **It reads; it addresses no hardware.** That is why the crate sits under `Softapps/` and not in `BareMetal/Core/`. — `Cargo.toml` (header)
-- **Keep going on an error.** Parsing does not depend on the bus: the publish waits at most 5 s for a broker and the parsed result is returned whether or not anything acked. — `ias_importer.rs` (`publish_to_mqtt`; the others follow the same shape)
+- **Keep going on an error.** Parsing does not depend on the bus: the publish waits a bounded time for a broker (5 s for IAS and WWB, 3 s for Soundbase and CSV) and the parsed result is returned whether or not anything acked. — `publish_to_mqtt` in each `*_importer.rs`
 - **No absolute fixture paths.** Runners resolve fixtures through `env!("CARGO_MANIFEST_DIR")`, and report a missing file with a non-zero exit instead of exiting 0. — the four `test_*.rs`
 - **Where it does not hold:**
   - The runners look for fixtures at `<this crate>/DataMigration/<N_source>/test_data/…`, which does not exist; the fixtures are in each `DATATYPE.wireless.*/test_data/`. All four runners fail on a missing file (exit 1, 1, 1, 101).
