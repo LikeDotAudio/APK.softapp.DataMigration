@@ -3,5 +3,6 @@
   "category": "DataMigration",
   "icon": "\ud83d\udcc1",
   "description": "System Application component for APK.audio ecosystem.",
-  "entry": "main.py"
+  "entry": "Cargo.toml",
+  "tech": "rust"
 }
