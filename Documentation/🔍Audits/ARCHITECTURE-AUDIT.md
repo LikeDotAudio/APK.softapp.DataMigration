@@ -21,11 +21,11 @@ Claims to own "someone else's wireless-coordination report in, one channel recor
 | Boundary Integrity | 2 | importers parse and return records, publish nothing; the bus edge is the workers' |
 | Duplication Control | 3 | each importer has one build owner; this crate only re-exports |
 | Testing & Contracts | 3 | `cargo test --locked` runs the data editor's tests and the frame-headers contract; each importer's tests run at home |
-| Change management | 2 | `0.2.0`, importers pinned by rev; tags/pushes are the owner's (the pinned revs are unpushed until then) |
+| Change management | 3 | `0.2.0`, importers pinned by pushed revs that resolve from GitHub |
 Score key: 3 meets the standard · 2 minor gaps · 1 significant gaps · 0 absent / violated.
 
 ## Findings
 1. **Good: a real consumer-driven contract.** `tests/frame_headers.rs` parses each source's fixture and asserts every `headers` entry declared by the `Gui_Frames/3_Data_Migration/` tables is a field on the record. It reads the frames and fixtures from the checkout — kept by design (PRINCIPLES): it is checked against the real consumer.
 2. **Good: retired topics removed.** The orchestrator inbox and its `mqtt_topic` helpers were dropped (LOOSE-importeddata-dead-topics); the importers name no topic.
 3. **Good: the editor fails loudly.** `EDITOR.Data editor/data_editor.rs` returns `Err` for an unknown op, missing row, duplicate append or non-array file and writes by temp file + rename.
-4. **The pinned importer revs are not pushed yet.** A build outside the monorepo (no `[patch]`) fetches them from GitHub. Needs owner: push the four DATATYPE.wireless.* repositories.
+4. **Good: builds standalone.** `git archive HEAD` built outside the monorepo resolves the four pinned importer revs (and the kernel) from GitHub.
