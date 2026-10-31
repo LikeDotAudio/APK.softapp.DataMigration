@@ -15,27 +15,18 @@
 //! parser. `tests/frame_headers.rs` compares the two against each source's
 //! fixture; the root `check.sh datamigration` lane runs it.
 //!
-//! Must not: hardcode an absolute path to a fixture. The four `test_*.rs`
-//! runners are `[[bin]]` targets of this crate (`Cargo.toml`, files under
-//! `Softapps/DATATYPE/`) and resolve `test_data/` through
-//! `env!("CARGO_MANIFEST_DIR")`. They previously named
-//! `/home/anthony/.../APK:BareMetal/...`, a directory the rename removed, and
-//! each printed the failure to stderr and exited 0 — so they could not have
-//! failed a gate even while every one of them was reading nothing.
+//! Must not: compile another repository's file. Each importer is a crate its
+//! DATATYPE.wireless.* repository owns (`SRC/importer/`), taken here by git rev
+//! (`Cargo.toml`) and re-exported under its historical module name, so callers
+//! (`oaRustCore::data_migration::csv_importer::…`) are unchanged. Until the
+//! 2026-10-30 audit these were `#[path]` includes and the four `test_*` runners
+//! were `[[bin]]`s of this crate built from those repositories' files; the runners
+//! are now each repository's own `importer/tests/fixtures.rs`.
 
-//! Data Migration Rust module aggregator.
-
-#[path = "../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs"]
-pub mod ias_importer;
-
-#[path = "../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs"]
-pub mod soundbase_importer;
-
-#[path = "../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs"]
-pub mod wwb_importer;
-
-#[path = "../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs"]
-pub mod csv_importer;
+pub use apkaudio_wireless_ias as ias_importer;
+pub use apkaudio_wireless_soundbase as soundbase_importer;
+pub use apkaudio_wireless_wwb as wwb_importer;
+pub use apkaudio_wireless_csv as csv_importer;
 
 #[path = "EDITOR.Data editor/data_editor.rs"]
 pub mod data_editor;

@@ -1,8 +1,8 @@
 {
-  "name": "Datamigration",
+  "name": "Data Migration",
   "category": "DataMigration",
-  "icon": "\ud83d\udcc1",
-  "description": "System Application component for APK.audio ecosystem.",
-  "entry": "Cargo.toml",
+  "icon": "📁",
+  "description": "Rust library behind the Data Migration tab: re-exports the four wireless-coordination importers (IAS, Soundbase, Wireless Workbench, CSV — each owned by its DATATYPE.wireless.* repository) for oaRustCore, carries the JSON data editor, and holds the frame-headers contract test. No page of its own: the tab's frames post each file as a job to its wireless_* worker.",
+  "entry": "mod.rs",
   "tech": "rust"
 }

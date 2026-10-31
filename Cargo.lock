@@ -34,12 +34,53 @@ dependencies = [
 
 [[package]]
 name = "apkaudio-data-migration"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
- "csv",
- "scraper",
+ "apkaudio-wireless-csv",
+ "apkaudio-wireless-ias",
+ "apkaudio-wireless-soundbase",
+ "apkaudio-wireless-wwb",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "apkaudio-wireless-csv"
+version = "0.1.0"
+dependencies = [
+ "apkaudio-wireless-kernel",
+ "csv",
+ "serde",
+]
+
+[[package]]
+name = "apkaudio-wireless-ias"
+version = "0.1.0"
+dependencies = [
+ "apkaudio-wireless-kernel",
+ "scraper",
+ "serde",
+]
+
+[[package]]
+name = "apkaudio-wireless-kernel"
+version = "0.1.0"
+
+[[package]]
+name = "apkaudio-wireless-soundbase"
+version = "0.1.0"
+dependencies = [
+ "apkaudio-wireless-kernel",
+ "csv",
+ "serde",
+]
+
+[[package]]
+name = "apkaudio-wireless-wwb"
+version = "0.1.0"
+dependencies = [
+ "apkaudio-wireless-kernel",
+ "serde",
  "zip",
 ]
 

@@ -4,16 +4,20 @@
 
 ```
 cargo build                                  # this directory is its own workspace root
-cargo test --lib                             # data editor unit tests
-cargo run --bin test_ias_importer            # also: test_soundbase_importer, test_wwb_importer,
-                                             #       test_csv_pattern_importer
+cargo test --locked                          # data editor unit tests + tests/frame_headers.rs
 ```
 
-In the running system the importer files run inside their POD.workers workers
+(Run from this directory: the git-excluded `.cargo/config.toml` here patches the four importer
+crates to the checkout. Each importer's own fixture test runs in its repository:
+`bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`.)
+
+In the running system the importers run inside their POD.workers workers
 (`DATATYPE/DATATYPE.wireless.{IAS,SOUNDbase,SHUREwirelessWorkbench,CSV}/SRC/`, tokens `wireless_ias`,
-`wireless_soundbase`, `wireless_wwb`, `wireless_csv`), which compile the same `*_importer.rs` by `#[path]`.
-`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml` still takes this crate by path and `oaRustCore` re-exports it as
-`data_migration` (the CSV parser reads it there). The orchestrator's `services::data_migration` inbox on
+`wireless_soundbase`, `wireless_wwb`, `wireless_csv`). Each repository owns its parser as a crate
+(`SRC/importer/`): its worker links it by path, this crate by git rev — one owner per importer.
+`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml` takes this crate by git rev (patched to the checkout) and
+`oaRustCore` re-exports it as `data_migration` (the CSV parser reads it there). Dependencies run one way:
+Core → this crate → the four importer crates → the wireless kernel; this crate names nothing of NODE.BareMetal. The orchestrator's `services::data_migration` inbox on
 `APK.audio/System/DataMigration/+/FilePath` is retired (LOOSE-datamigration-frames-to-workers).
 
 ## Data flow
@@ -24,21 +28,21 @@ frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IA
       APK.audio/System/Protocols/wireless_<source>/outgoing/job   {job_id, filename, text | content_b64}
         └─ the wireless_<source> worker (its own container)
              ├─ <source>_importer::classify_*()  — pure: parses, returns, publishes nothing
-             └─ the worker answers {job_id, ok, result, error}, not retained, on
+             └─ the worker answers {schema, job_id, ok, result, error}, not retained, on
                 APK.audio/System/Protocols/wireless_<source>/incoming/result
                    └─ the frame's table draws result.channels / result.records under its declared headers
-                      (tests/frame_headers.rs, `check.sh datamigration`: every header is a field)
+                      (tests/frame_headers.rs: every header is a field)
 ```
 
 ## Modules
 
-| Module | Source (`#[path]` from `mod.rs`) | Reads | Its worker answers on |
+| Module | Re-export of (crate, by git rev) | Reads | Its worker answers on |
 |---|---|---|---|
-| `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `…/wireless_ias/incoming/result` |
-| `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/wireless_soundbase/incoming/result` |
-| `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | WWB `.shw` (zip) | `…/wireless_wwb/incoming/result` |
-| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
-| `data_editor` | `EDITOR.Data editor/data_editor.rs` | `DataEditCommand` on a JSON-array dataset; a marker CSV | writes the dataset file |
+| `ias_importer` | `apkaudio-wireless-ias` (DATATYPE.wireless.IAS/SRC/importer) | IAS HTML report | `…/wireless_ias/incoming/result` |
+| `soundbase_importer` | `apkaudio-wireless-soundbase` (DATATYPE.wireless.SOUNDbase/SRC/importer) | Soundbase CSV | `…/wireless_soundbase/incoming/result` |
+| `wwb_importer` | `apkaudio-wireless-wwb` (DATATYPE.wireless.SHUREwirelessWorkbench/SRC/importer) | WWB `.shw` (zip) | `…/wireless_wwb/incoming/result` |
+| `csv_importer` | `apkaudio-wireless-csv` (DATATYPE.wireless.CSV/SRC/importer) | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
+| `data_editor` | this repo: `EDITOR.Data editor/data_editor.rs` (`#[path]`, its own file) | `DataEditCommand` on a JSON-array dataset; a marker CSV | writes the dataset file |
 
 ### The data editor
 

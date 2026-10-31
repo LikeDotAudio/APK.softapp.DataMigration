@@ -9,18 +9,28 @@
 # the crate is its own workspace root already, and declaring the section would
 # claim any crate a later session files beside it under `Softapps/`.
 #
-# `path = "mod.rs"` rather than a `src/` layout: the numbered folders are the
-# published order of the four sources and `mod.rs` reaches them with `#[path]`
-# attributes relative to itself. A `src/lib.rs` would put `../` in front of all
-# five of those and buy nothing.
+# `path = "mod.rs"` rather than a `src/` layout: `mod.rs` reaches its one own
+# module, the data editor, with a `#[path]` into this repository's own folder.
 #
-# `oaRustCore` depends on this crate by path and re-exports it as
-# `data_migration`, so `oaRustCore::data_migration::ias_importer::…` — which is
-# what `orchestrator/src/services/visa.rs` calls — still resolves.
+# THE IMPORTERS ARE CRATES WITH ONE OWNER EACH (2026-10-30 audit). Each
+# DATATYPE.wireless.* repository owns its parser as a crate in `SRC/importer/`
+# and builds its own worker on it; this crate depends on the four by git rev
+# and re-exports them under their historical module names (`mod.rs`), so
+# `oaRustCore::data_migration::csv_importer::…` still resolves. It compiles no
+# other repository's file by `#[path]` and builds none of their runners: each
+# importer's fixture test lives in its own repository. Its own code is the data
+# editor, and `tests/frame_headers.rs` (the frames ⊆ records contract).
+#
+# In the monorepo the git-excluded `.cargo/config.toml` patches the four back
+# to the checkout; NODE.BareMetal's Core (which depends on this crate by rev)
+# carries the same patches. Bumping an importer is editing its rev here.
+#
+# DEPENDS ON NOTHING OF NODE.BareMetal: the dependency between this crate and
+# oaRustCore runs one way (Core → this), so there is no cycle.
 
 [package]
 name = "apkaudio-data-migration"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [lib]
@@ -28,28 +38,9 @@ name = "apkaudio_data_migration"
 path = "mod.rs"
 
 [dependencies]
+apkaudio-wireless-ias = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS", rev = "1fb5112e5545b32d579c3aabdc4e0de37976a68b" }
+apkaudio-wireless-soundbase = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase", rev = "fa473723732c1fbe1f35b3b6f3274d03dea0a8aa" }
+apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench", rev = "3a2471b3552b35e09d16bde92e7b0d9fd95db512" }
+apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "28c0554e2704022817ebd51aa46a9d4002c0f16b" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-csv = "1.3"
-scraper = "0.18"
-zip = "0.6"
-
-# Each runner declares `mod <source>_importer;` against the importer sitting
-# beside it, so it compiles the parser rather than linking this crate's lib.
-# They resolve `test_data/` through `env!("CARGO_MANIFEST_DIR")`, which is this
-# directory — the reason the move does not need to touch them.
-[[bin]]
-name = "test_ias_importer"
-path = "../../DATATYPE/DATATYPE.wireless.IAS/test_ias_importer.rs"
-
-[[bin]]
-name = "test_soundbase_importer"
-path = "../../DATATYPE/DATATYPE.wireless.SOUNDbase/test_soundbase_importer.rs"
-
-[[bin]]
-name = "test_wwb_importer"
-path = "../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/test_wwb_importer.rs"
-
-[[bin]]
-name = "test_csv_pattern_importer"
-path = "../../DATATYPE/DATATYPE.wireless.CSV/SRC/test_csv_pattern_importer.rs"
