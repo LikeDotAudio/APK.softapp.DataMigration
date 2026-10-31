@@ -9,32 +9,35 @@ cargo run --bin test_ias_importer            # also: test_soundbase_importer, te
                                              #       test_csv_pattern_importer
 ```
 
-In the running system nobody calls the crate directly: the BareMetal orchestrator depends on it.
-`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml` takes it by path and `oaRustCore` re-exports it as
-`data_migration`. The orchestrator's `services::data_migration` (`ORCHESTRATOR:hunter:VISA/src/services/data_migration.rs`)
-subscribes to `APK.audio/System/DataMigration/+/FilePath` and hands each file to the right importer.
+In the running system the importer files run inside their POD.workers workers
+(`DATATYPE/DATATYPE.wireless.{IAS,SOUNDbase,SHUREwirelessWorkbench,CSV}/SRC/`, tokens `wireless_ias`,
+`wireless_soundbase`, `wireless_wwb`, `wireless_csv`), which compile the same `*_importer.rs` by `#[path]`.
+`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml` still takes this crate by path and `oaRustCore` re-exports it as
+`data_migration` (the CSV parser reads it there). The orchestrator's `services::data_migration` inbox on
+`APK.audio/System/DataMigration/+/FilePath` is retired (LOOSE-datamigration-frames-to-workers).
 
 ## Data flow
 
 ```
 frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IAS,2_Soundbase,3_Wireless_Workbench,4_CSV})
-   └─ publishes APK.audio/System/DataMigration/<source>/FilePath   (a path, or file text/bytes)
-        └─ orchestrator data_migration daemon (own client id, own thread)
-             ├─ oaRustCore::data_migration::<source>_importer::parse_*()  — pure: parses, returns, publishes nothing
-             └─ the daemon publishes the result: APK.audio/System/DataMigration/<source>/ImportedData
-                (retained, QoS 1, on the broker the orchestrator was started with — services/data_migration.rs)
-                   └─ the frame renders the record's fields under its declared headers
+   └─ the browser reads the file and posts a job, not retained:
+      APK.audio/System/Protocols/wireless_<source>/outgoing/job   {job_id, filename, text | content_b64}
+        └─ the wireless_<source> worker (its own container)
+             ├─ <source>_importer::classify_*()  — pure: parses, returns, publishes nothing
+             └─ the worker answers {job_id, ok, result, error}, not retained, on
+                APK.audio/System/Protocols/wireless_<source>/incoming/result
+                   └─ the frame's table draws result.channels / result.records under its declared headers
                       (tests/frame_headers.rs, `check.sh datamigration`: every header is a field)
 ```
 
 ## Modules
 
-| Module | Source (`#[path]` from `mod.rs`) | Reads | Its result is published (by the daemon) on |
+| Module | Source (`#[path]` from `mod.rs`) | Reads | Its worker answers on |
 |---|---|---|---|
-| `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `…/DataMigration/IAS/ImportedData` |
-| `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/Soundbase/ImportedData` |
-| `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | WWB `.shw` (zip) | `…/WWB/ImportedData` |
-| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/CSV/ImportedData` |
+| `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `…/wireless_ias/incoming/result` |
+| `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/wireless_soundbase/incoming/result` |
+| `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | WWB `.shw` (zip) | `…/wireless_wwb/incoming/result` |
+| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
 | `data_editor` | `EDITOR.Data editor/data_editor.rs` | `DataEditCommand` on a JSON-array dataset; a marker CSV | writes the dataset file |
 
 ### The data editor

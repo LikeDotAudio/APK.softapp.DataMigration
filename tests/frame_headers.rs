@@ -78,6 +78,14 @@ fn assert_frame_matches(frame: &str, topic: &str, records: Value) {
     assert!(absent.is_empty(), "{frame} declares {absent:?}, which its importer never emits — blank columns");
 }
 
+/// The topic a POD.workers worker answers on, which is where each frame's
+/// table listens since the frames post their file as a job
+/// (LOOSE-datamigration-frames-to-workers). The worker's envelope carries the
+/// importer's own result, so the records checked here are the ones it draws.
+fn worker_result(token: &str) -> String {
+    format!("APK.audio/System/Protocols/{token}/incoming/result")
+}
+
 fn to_value<T: serde::Serialize>(v: T) -> Value {
     serde_json::to_value(v).expect("a record serialises")
 }
@@ -85,7 +93,7 @@ fn to_value<T: serde::Serialize>(v: T) -> Value {
 #[test]
 fn ias_frame_headers_are_ias_fields() {
     let r = ias_importer::parse_ias_report(fixture("DATATYPE.wireless.IAS", "report.html")).unwrap();
-    assert_frame_matches("1_IAS/IAS_Importer.json", &ias_importer::ias_mqtt_topic(), to_value(r.channels));
+    assert_frame_matches("1_IAS/IAS_Importer.json", &worker_result("wireless_ias"), to_value(r.channels));
 }
 
 #[test]
@@ -93,7 +101,7 @@ fn soundbase_frame_headers_are_soundbase_fields() {
     let r = soundbase_importer::parse_soundbase_report(fixture("DATATYPE.wireless.SOUNDbase", "SB PDF.csv")).unwrap();
     assert_frame_matches(
         "2_Soundbase/Soundbase_Importer.json",
-        &soundbase_importer::soundbase_mqtt_topic(),
+        &worker_result("wireless_soundbase"),
         to_value(r.channels),
     );
 }
@@ -103,19 +111,19 @@ fn wwb_frame_headers_are_wwb_fields() {
     let r = wwb_importer::parse_wwb_file(fixture("DATATYPE.wireless.SHUREwirelessWorkbench", "venue.shw")).unwrap();
     assert_frame_matches(
         "3_Wireless_Workbench/Wireless_Workbench_Importer.json",
-        &wwb_importer::wwb_mqtt_topic(),
+        &worker_result("wireless_wwb"),
         to_value(r.channels),
     );
 }
 
-/// The CSV frame reads the wireless_csv worker's answer, whose `result` is this
-/// importer's `CsvRecognizedResult` (DATATYPE.wireless.CSV/SRC/src/lib.rs).
+/// The wireless_csv worker's `result` is this importer's `CsvRecognizedResult`
+/// (DATATYPE.wireless.CSV/SRC/src/lib.rs).
 #[test]
 fn csv_frame_headers_are_csv_record_fields() {
     let r = csv_importer::parse_and_classify_csv(fixture("DATATYPE.wireless.CSV", "venue.csv")).unwrap();
     assert_frame_matches(
         "4_CSV/CSV_Importer.json",
-        "APK.audio/System/Protocols/wireless_csv/incoming/result",
+        &worker_result("wireless_csv"),
         to_value(r.records),
     );
 }

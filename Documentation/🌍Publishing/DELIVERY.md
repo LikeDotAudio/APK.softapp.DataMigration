@@ -20,8 +20,9 @@
   `PODS/POD.THIN/Softapps/MANAGEMENT_AND_UTILITIES/MANAGEMENT.DataMigration`, with two nested submodules
   (`Documentation Management`, `Download folder cleanup`). No GitHub workflow.
 - **Where it lands**: compiled into the BareMetal node. `PODS/POD.THICK/NODE.BareMetal/Docker/Dockerfile` copies
-  `PODS/POD.THIN/Softapps` to its real relative position so `Core/Cargo.toml`'s path dependency resolves, and the
-  importers run inside the orchestrator binary.
+  `PODS/POD.THIN/Softapps` to its real relative position so `Core/Cargo.toml`'s path dependency resolves. The
+  importers that answer the frames run in the `wireless_*` worker images (`DATATYPE.wireless.*/Docker/`), not in
+  the orchestrator, whose DataMigration inbox is retired.
 - **Web images**: `web-static` copies the Softapps tree with the `.rs` and `Cargo.*` files in it, and its nginx
   answers `*.rs`, `*.toml`, `*.lock` with 404 (`WEB.Frontend-Assets/Docker/nginx.conf`); `*.py` under Softapps —
   `clean download.py` — never reaches any image (root `.dockerignore`, PLAN-3422.01).

@@ -7,8 +7,8 @@
 ## 🧩 Architectural Role
 * **Family**: Soft App library (Rust crate `apkaudio-data-migration`, lib name `apkaudio_data_migration`)
 * **Category**: `MANAGEMENT_AND_UTILITIES` — data migration / import
-* **Pipeline Stage**: intake — someone else's report in, `APK.audio/System/DataMigration/<source>/ImportedData` out
-* **Used by**: `oaRustCore` (`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml`) depends on it by path and re-exports it as `data_migration`
+* **Pipeline Stage**: intake — someone else's report in, one channel record per row out (in the running system, each importer's POD.workers worker answers a job on `APK.audio/System/Protocols/wireless_<source>/incoming/result`)
+* **Used by**: the `wireless_ias` / `wireless_soundbase` / `wireless_wwb` / `wireless_csv` workers (`../../DATATYPE/DATATYPE.wireless.*/SRC/`), which compile the same importer files; `oaRustCore` (`PODS/POD.THICK/NODE.BareMetal/SRC/Core/Cargo.toml`) still depends on it by path and re-exports it as `data_migration`
 * **Rendered by**: the Data Migration frames in `PODS/POD.THIN/WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/`
 
 ---
@@ -16,15 +16,15 @@
 ## ⚙️ Repository Overview
 A standalone Git repository mounted at `PODS/POD.THIN/Softapps/MANAGEMENT_AND_UTILITIES/MANAGEMENT.DataMigration`. The crate root is `mod.rs` (no `src/`), and most of its modules live in sibling `DATATYPE` repositories, reached with `#[path]`:
 
-| Module | Source file | Reads | Result published (retained, QoS 1, by the orchestrator's daemon) on |
+| Module | Source file | Reads | Its worker answers (not retained) on |
 |---|---|---|---|
-| `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `APK.audio/System/DataMigration/IAS/ImportedData` |
-| `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/DataMigration/Soundbase/ImportedData` |
-| `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | Wireless Workbench `.shw` archive | `…/DataMigration/WWB/ImportedData` |
-| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/DataMigration/CSV/ImportedData` |
+| `ias_importer` | `../../DATATYPE/DATATYPE.wireless.IAS/ias_importer.rs` | IAS HTML report | `APK.audio/System/Protocols/wireless_ias/incoming/result` |
+| `soundbase_importer` | `../../DATATYPE/DATATYPE.wireless.SOUNDbase/soundbase_importer.rs` | Soundbase CSV | `…/wireless_soundbase/incoming/result` |
+| `wwb_importer` | `../../DATATYPE/DATATYPE.wireless.SHUREwirelessWorkbench/wwb_importer.rs` | Wireless Workbench `.shw` archive | `…/wireless_wwb/incoming/result` |
+| `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
 | `data_editor` | `EDITOR.Data editor/data_editor.rs` | a `DataEditCommand` against a JSON-array dataset (append / modify / delete by `"id"`); a marker CSV | nothing (writes the dataset file; returns values) |
 
-Topics are built from the contracts crate (`apkaudio_contracts::topics::data_migration`, `PODS/POD.THICK/NODE.BareMetal/SRC/contracts/rust`), never typed out. The importers themselves publish nothing: the orchestrator's data-migration daemon publishes each result on the broker it was started with.
+Topics are built from the contracts crate (`apkaudio_contracts::topics::data_migration`, `PODS/POD.THICK/NODE.BareMetal/SRC/contracts/rust`), never typed out. The importers themselves publish nothing. Each Data Migration frame posts the chosen file as a job to its worker and draws the worker's answer; the orchestrator's DataMigration inbox (`…/DataMigration/<source>/FilePath` → `…/ImportedData`) is retired (LOOSE-datamigration-frames-to-workers). The `*_mqtt_topic()` helpers still name the old `ImportedData` topics; nothing publishes there.
 
 The four `test_*` runners are `[[bin]]` targets declared in `Cargo.toml`, with their source beside each importer (`test_ias_importer`, `test_soundbase_importer`, `test_wwb_importer`, `test_csv_pattern_importer`).
 
@@ -49,7 +49,7 @@ The principles the code follows, and where it shows them:
 - **Many formats in, one record out.** Four parsers, one channel shape, one topic family. — `mod.rs`, the four `*_importer.rs`
 - **Topics come from the contract.** Every importer calls `topics::data_migration(source, "ImportedData")` instead of spelling the string. — `*_importer.rs` (`*_mqtt_topic`)
 - **It reads; it addresses no hardware.** That is why the crate sits under `Softapps/` and not in `BareMetal/Core/`. — `Cargo.toml` (header)
-- **Parsing does not depend on the bus.** The importers parse and return; the orchestrator's daemon publishes. — each `*_importer.rs` header
+- **Parsing does not depend on the bus.** The importers parse and return; their workers publish. — each `*_importer.rs` header
 - **No absolute fixture paths.** Runners resolve fixtures through `env!("CARGO_MANIFEST_DIR")`, and report a missing file with a non-zero exit instead of exiting 0. — the four `test_*.rs`
 - **Say what was done, or fail.** The data editor counts only records it wrote, rewrites a dataset by temp file + rename, and returns `Err` for an unknown operation, a missing row, a duplicate append or a file that is not a JSON array. — `process_data_editor_command` in `EDITOR.Data editor/data_editor.rs`
 - **Where it does not hold:** listed in [PRINCIPLES](Documentation/%F0%9F%8F%9BPhilosophy/PRINCIPLES.md).
