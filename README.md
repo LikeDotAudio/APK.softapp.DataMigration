@@ -35,9 +35,9 @@ The four `test_*` runners this crate used to build from those repositories' file
 ---
 
 ## 🚀 Usage & Integration
-* **Build**: `cargo build` in this directory (its own workspace root; no `[workspace]` key on purpose). The git-excluded `.cargo/config.toml` patches the four importer crates to the checkout.
+* **Build**: `cargo build` in this directory (its own workspace root; no `[workspace]` key on purpose). The git-excluded `.cargo/config.toml` patches the four importer crates (and the test-only PDF importer) to the checkout.
 * **Importer tests**: in each importer's repository — `bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`.
-* **Tests**: `cargo test --locked` — the data editor's unit tests, and `tests/frame_headers.rs`: every header a `Gui_Frames/3_Data_Migration/` table declares is a field its importer emits.
+* **Tests**: `cargo test --locked` — the data editor's unit tests, and `tests/frame_headers.rs`: every header a `Gui_Frames/3_Data_Migration/` table declares is a field each worker it draws emits (its `topic` and its `also_topics` — the Soundbase table also draws the SoundBase PDF worker, whose importer is a test-only dev-dependency).
 * **Web Portal Entry**: none of its own. `display.json` describes the crate (`entry: mod.rs`, `tech: rust`); the UI is the frames listed above.
 * **Remote Repository**: `https://github.com/LikeDotAudio/APK.softapp.DataMigration.git`
 

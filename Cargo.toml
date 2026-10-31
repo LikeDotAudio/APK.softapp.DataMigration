@@ -23,7 +23,8 @@
 #
 # In the monorepo the git-excluded `.cargo/config.toml` patches the four back
 # to the checkout; NODE.BareMetal's Core (which depends on this crate by rev)
-# carries the same patches. Bumping an importer is editing its rev here.
+# carries the same patches. It patches the test-only PDF importer
+# (DATATYPE.wireless.PDF, a dev-dependency Core never sees) the same way. Bumping an importer is editing its rev here.
 #
 # DEPENDS ON NOTHING OF NODE.BareMetal: the dependency between this crate and
 # oaRustCore runs one way (Core → this), so there is no cycle.
@@ -44,3 +45,10 @@ apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DAT
 apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "28c0554e2704022817ebd51aa46a9d4002c0f16b" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+
+# Test-only: the SoundBase table also draws the wireless_pdf worker's records
+# (its `also_topics`), so `tests/frame_headers.rs` checks the headers against
+# the PDF importer's record too. Not re-exported — a dev-dependency never
+# reaches NODE.BareMetal's Core, which depends on this crate by rev.
+[dev-dependencies]
+apkaudio-wireless-soundbase-pdf = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.PDF", rev = "589c4e0127943e86711b473738a2ab5208ae237a" }

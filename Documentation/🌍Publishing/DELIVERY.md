@@ -2,13 +2,15 @@
 
 ## Build
 
-`cargo build` here (Rust 2021; deps the four importer crates by git rev, `serde`, `serde_json`). In the monorepo the git-excluded `.cargo/config.toml` patches the importers to the checkout.
+`cargo build` here (Rust 2021; deps the four importer crates by git rev, `serde`, `serde_json`; dev-dep the SoundBase PDF importer `apkaudio-wireless-soundbase-pdf` by git rev, for `tests/frame_headers.rs` only). In the monorepo the git-excluded `.cargo/config.toml` patches the importers (all five) to the checkout.
 
 ## Test
 
 - `cargo test --locked` (from this directory) — the data editor's unit tests and `tests/frame_headers.rs`: every
-  header the four `Gui_Frames/3_Data_Migration/` tables declare is a field of a record parsed from that source's
-  fixture (2 + 5 passed 2026-10-30). This is the one local check; the root CI verifies nothing on purpose.
+  header the `Gui_Frames/3_Data_Migration/` importer tables declare is a field of a record parsed from the fixture
+  of every worker the table draws — its `topic` and each of its `also_topics` (the Soundbase table: the
+  SoundBase CSV and the SoundBase PDF workers) — and every such worker topic is one the test parses
+  (2 + 7 passed 2026-10-31). This is the one local check; the root CI verifies nothing on purpose.
 - The importers' own tests run in their repositories (`bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`).
 - Monorepo smoke run: [SMOKE.md](../%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md).
 

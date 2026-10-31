@@ -8,7 +8,7 @@ cargo test --locked                          # data editor unit tests + tests/fr
 ```
 
 (Run from this directory: the git-excluded `.cargo/config.toml` here patches the four importer
-crates to the checkout. Each importer's own fixture test runs in its repository:
+crates, and the test-only SoundBase PDF importer, to the checkout. Each importer's own fixture test runs in its repository:
 `bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`.)
 
 In the running system the importers run inside their POD.workers workers
@@ -30,8 +30,10 @@ frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IA
              ├─ <source>_importer::classify_*()  — pure: parses, returns, publishes nothing
              └─ the worker answers {schema, job_id, ok, result, error}, not retained, on
                 APK.audio/System/Protocols/wireless_<source>/incoming/result
-                   └─ the frame's table draws result.channels / result.records under its declared headers
-                      (tests/frame_headers.rs: every header is a field)
+                   └─ the frame's table draws result.channels / result.records under its declared headers,
+                      from its `topic` and each of its `also_topics` (the Soundbase table also draws
+                      …/wireless_pdf/incoming/result)
+                      (tests/frame_headers.rs: every header is a field of every topic's worker record)
 ```
 
 ## Modules
@@ -42,6 +44,7 @@ frame upload (WEB.Frontend-Assets/SRC/FrontEnd/Gui_Frames/3_Data_Migration/{1_IA
 | `soundbase_importer` | `apkaudio-wireless-soundbase` (DATATYPE.wireless.SOUNDbase/SRC/importer) | Soundbase CSV | `…/wireless_soundbase/incoming/result` |
 | `wwb_importer` | `apkaudio-wireless-wwb` (DATATYPE.wireless.SHUREwirelessWorkbench/SRC/importer) | WWB `.shw` (zip) | `…/wireless_wwb/incoming/result` |
 | `csv_importer` | `apkaudio-wireless-csv` (DATATYPE.wireless.CSV/SRC/importer) | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
+| — (dev-dependency, `tests/frame_headers.rs` only) | `apkaudio-wireless-soundbase-pdf` (DATATYPE.wireless.PDF/SRC/importer) | SoundBase PDF (fixture `SRC/importer/fixtures/SB PDF.pdf`) | `…/wireless_pdf/incoming/result` (the Soundbase table's `also_topics`) |
 | `data_editor` | this repo: `EDITOR.Data editor/data_editor.rs` (`#[path]`, its own file) | `DataEditCommand` on a JSON-array dataset; a marker CSV | writes the dataset file |
 
 ### The data editor
