@@ -40,6 +40,11 @@ Rebuild the node image (`up-stack.sh` for NODE.BareMetal). Push and pointer bump
 
 - No CI runs `cargo test` (by design at the root); it is run by hand before a push.
 
+## Delivered 2026-10-31: portable file names (no `:` `|` or case twins)
+
+- The monorepo now checks out on Windows and macOS: no tracked name holds `<>:"|?*`, a trailing dot or space, a device name or a case-only twin. Colon folders became dot folders (the POD.x convention).
+- References to the renamed folders updated (`NODE.BareMetal Core crates`). Docs/comments only, no behaviour change.
+
 ## Delivered from the 2026-10-30 audit
 
 - **One owner per importer** — the four `#[path]` includes of DATATYPE files are gone: `mod.rs` re-exports `apkaudio-wireless-{ias,soundbase,wwb,csv}`, crates owned by their DATATYPE.wireless.* repositories (`SRC/importer/`) and taken here by git rev; their workers link the same crates by path. `oaRustCore::data_migration::…` paths are unchanged. Verified by `cargo test --locked` (data editor 2, frame_headers 5).
