@@ -24,7 +24,7 @@ A standalone Git repository mounted at `PODS/POD.THIN/Softapps/MANAGEMENT_AND_UT
 | `csv_importer` | `../../DATATYPE/DATATYPE.wireless.CSV/SRC/csv_importer.rs` | pattern-recognised CSV | `…/wireless_csv/incoming/result` |
 | `data_editor` | `EDITOR.Data editor/data_editor.rs` | a `DataEditCommand` against a JSON-array dataset (append / modify / delete by `"id"`); a marker CSV | nothing (writes the dataset file; returns values) |
 
-Topics are built from the contracts crate (`apkaudio_contracts::topics::data_migration`, `PODS/POD.THICK/NODE.BareMetal/SRC/contracts/rust`), never typed out. The importers themselves publish nothing. Each Data Migration frame posts the chosen file as a job to its worker and draws the worker's answer; the orchestrator's DataMigration inbox (`…/DataMigration/<source>/FilePath` → `…/ImportedData`) is retired (LOOSE-datamigration-frames-to-workers). The `*_mqtt_topic()` helpers still name the old `ImportedData` topics; nothing publishes there.
+The importers name no topic and publish nothing. Each Data Migration frame posts the chosen file as a job to its worker and draws the worker's answer; the orchestrator's DataMigration inbox (`…/DataMigration/<source>/FilePath` → `…/ImportedData`) is retired (LOOSE-datamigration-frames-to-workers). Their `mqtt_topic` fields and helpers, and the browser's `/Clear` → `ImportedData` handling, went with it (LOOSE-importeddata-dead-topics).
 
 The four `test_*` runners are `[[bin]]` targets declared in `Cargo.toml`, with their source beside each importer (`test_ias_importer`, `test_soundbase_importer`, `test_wwb_importer`, `test_csv_pattern_importer`).
 
@@ -46,8 +46,7 @@ The four `test_*` runners are `[[bin]]` targets declared in `Cargo.toml`, with t
 ## 🏛 Philosophy
 The principles the code follows, and where it shows them:
 
-- **Many formats in, one record out.** Four parsers, one channel shape, one topic family. — `mod.rs`, the four `*_importer.rs`
-- **Topics come from the contract.** Every importer calls `topics::data_migration(source, "ImportedData")` instead of spelling the string. — `*_importer.rs` (`*_mqtt_topic`)
+- **Many formats in, one record out.** Four parsers, one channel shape, — `mod.rs`, the four `*_importer.rs`
 - **It reads; it addresses no hardware.** That is why the crate sits under `Softapps/` and not in `BareMetal/Core/`. — `Cargo.toml` (header)
 - **Parsing does not depend on the bus.** The importers parse and return; their workers publish. — each `*_importer.rs` header
 - **No absolute fixture paths.** Runners resolve fixtures through `env!("CARGO_MANIFEST_DIR")`, and report a missing file with a non-zero exit instead of exiting 0. — the four `test_*.rs`

@@ -7,8 +7,7 @@ What the importer crate keeps, each with the code that keeps it. Ecosystem rules
 
 | Principle | Kept by |
 |---|---|
-| **Many formats in, one record out.** Four parsers (IAS HTML, Soundbase CSV, WWB `.shw`, pattern CSV), one channel record, one topic family. | `mod.rs` (`#[path]` modules); `DATATYPE/DATATYPE.wireless.*/*_importer.rs` |
-| **Topics come from the contract.** Each importer calls `topics::data_migration(source, "ImportedData")`, never a typed string. | `ias_mqtt_topic()` (`DATATYPE.wireless.IAS/ias_importer.rs:36`) and its three siblings |
+| **Many formats in, one record out.** Four parsers (IAS HTML, Soundbase CSV, WWB `.shw`, pattern CSV), one channel record. | `mod.rs` (`#[path]` modules); `DATATYPE/DATATYPE.wireless.*/*_importer.rs` |
 | **It reads; it addresses no hardware** — which is why the crate lives under `Softapps/`, not `BareMetal/Core/`. | `Cargo.toml` header |
 | **Parsing does not depend on the bus.** The importers are pure — they parse and return; their POD.workers workers publish — so a test run never writes the live bus. | each `*_importer.rs` header; `handle_job` in `DATATYPE/DATATYPE.wireless.*/SRC/src/lib.rs` |
 | **A declared header is an emitted field.** Each `Gui_Frames/3_Data_Migration/` table's headers are checked against a record parsed from that source's fixture. | `tests/frame_headers.rs`; root `check.sh datamigration` |
