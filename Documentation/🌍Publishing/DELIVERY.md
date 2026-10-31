@@ -11,6 +11,11 @@
   of every worker the table draws — its `topic` and each of its `also_topics` (the Soundbase table: the
   SoundBase CSV and the SoundBase PDF workers) — and every such worker topic is one the test parses
   (2 + 7 passed 2026-10-31). This is the one local check; the root CI verifies nothing on purpose.
+- The committed `Cargo.lock` is the GitHub resolution (no `[patch]`; refreshed in `7d30a1f`). It holds two
+  `apkaudio-wireless-kernel` revs (`28c0554`, and `646e960` through the PDF dev-dep's older SoundBase) and two
+  `apkaudio-wireless-soundbase` revs. Measured 2026-10-31: a `git archive HEAD` copy runs `cargo test --locked --lib`
+  green (2); in the monorepo the local `[patch]` resolves differently, so `--locked` refuses and plain `cargo test`
+  passes (2 + 7) but rewrites the lock — restore it before committing.
 - The importers' own tests run in their repositories (`bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`).
 - Monorepo smoke run: [SMOKE.md](../%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md).
 
