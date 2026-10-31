@@ -39,10 +39,10 @@ name = "apkaudio_data_migration"
 path = "mod.rs"
 
 [dependencies]
-apkaudio-wireless-ias = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS", rev = "1fb5112e5545b32d579c3aabdc4e0de37976a68b" }
-apkaudio-wireless-soundbase = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase", rev = "fa473723732c1fbe1f35b3b6f3274d03dea0a8aa" }
-apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench", rev = "3a2471b3552b35e09d16bde92e7b0d9fd95db512" }
-apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "28c0554e2704022817ebd51aa46a9d4002c0f16b" }
+apkaudio-wireless-ias = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS", rev = "6933cc49e8fd0e891c41a865ed1e49a5bb715c8c" }
+apkaudio-wireless-soundbase = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase", rev = "80616818f0ce2eb71f495aabf5193d1d1c657e62" }
+apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench", rev = "83eeec75358b96cb59a81db436430b8f99807e94" }
+apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "646e960e42ec13f2c39e4100a9019da9e4f632f6" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 

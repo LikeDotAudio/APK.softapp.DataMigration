@@ -11,11 +11,15 @@
   of every worker the table draws — its `topic` and each of its `also_topics` (the Soundbase table: the
   SoundBase CSV and the SoundBase PDF workers) — and every such worker topic is one the test parses
   (2 + 7 passed 2026-10-31). This is the one local check; the root CI verifies nothing on purpose.
-- The committed `Cargo.lock` is the GitHub resolution (no `[patch]`; refreshed in `7d30a1f`). It holds two
-  `apkaudio-wireless-kernel` revs (`28c0554`, and `646e960` through the PDF dev-dep's older SoundBase) and two
-  `apkaudio-wireless-soundbase` revs. Measured 2026-10-31: a `git archive HEAD` copy runs `cargo test --locked --lib`
-  green (2); in the monorepo the local `[patch]` resolves differently, so `--locked` refuses and plain `cargo test`
-  passes (2 + 7) but rewrites the lock — restore it before committing.
+- The committed `Cargo.lock` is the GitHub resolution (no `[patch]`). Since 2026-10-31 (LOOSE-standalone-locks) it
+  holds ONE `apkaudio-wireless-kernel` (CSV `646e960`, sdk-v0.7) and ONE `apkaudio-wireless-soundbase` (`8061681`):
+  the four importers moved to the revs that took that kernel (IAS `6933cc4`, SoundBase `8061681`, WWB `83eeec7`,
+  CSV `646e960`), which are the ones the PDF dev-dependency (`589c4e0`) already pinned — the PDF pin was the newer
+  one, so it stays. Measured: a `git archive HEAD` copy runs `cargo check --locked --all-targets` and
+  `cargo test --locked --lib` (2) green; the root's `check.sh datamigration` (cwd = root, so the folder's
+  `.cargo` patch is not read) passes `frame_headers` (7) against the locked revs and leaves the lock unchanged. Run
+  inside this folder, the local `[patch]` resolves differently, so `--locked` refuses and plain `cargo test`
+  rewrites the lock — restore it before committing.
 - The importers' own tests run in their repositories (`bash DATATYPE/DATATYPE.wireless.<X>/SRC/check.sh`).
 - Monorepo smoke run: [SMOKE.md](../%F0%9F%A7%A9Manual%20and%20Artifacts/SMOKE.md).
 
