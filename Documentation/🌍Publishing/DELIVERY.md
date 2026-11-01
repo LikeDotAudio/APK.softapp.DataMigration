@@ -58,3 +58,6 @@ Rebuild the node image (`up-stack.sh` for NODE.BareMetal). Push and pointer bump
 - **Real display.json** — name "Data Migration", a description of the crate, `entry: mod.rs`; README's `main.py` line fixed.
 - **Frame contract test** — kept and run by `cargo test` here (one local check). Kept by design: it reads the frames and fixtures from the checkout, because a consumer-driven contract is checked against the real consumer, not a copied header list.
 - **The pinned importer revs resolve from GitHub** — the four DATATYPE.wireless.* repositories are pushed; `git archive HEAD` of this repository extracted outside the monorepo and built with no `[patch]` fetched `apkaudio-wireless-{ias,soundbase,wwb,csv}` (and the kernel) at the pinned revs from GitHub and passed `cargo test --lib` (2). (`tests/frame_headers.rs` needs the monorepo's frames by design.)
+
+## Releases
+- **Released `2.0.0`, tag `v2.0.0`** (2026-11-01, ROAD-3452, the owner's V2) — no SDK pin; every manifest says 2.0.0; GitHub release `v2.0.0`.
