@@ -57,7 +57,7 @@ dependencies = [
 [[package]]
 name = "apkaudio-wireless-csv"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV?rev=a3ef09704bb677f27f1b6353f9450ec38301f272#a3ef09704bb677f27f1b6353f9450ec38301f272"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV?rev=52e568551a2f07fef4ecbfd41c4f3d3718216f53#52e568551a2f07fef4ecbfd41c4f3d3718216f53"
 dependencies = [
  "apkaudio-wireless-kernel",
  "csv",
@@ -67,7 +67,7 @@ dependencies = [
 [[package]]
 name = "apkaudio-wireless-ias"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS?rev=6b142746f03dd889c3f14f408e8887dc86ec8fbd#6b142746f03dd889c3f14f408e8887dc86ec8fbd"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS?rev=b761a8a282198f3109b6cdd29b1675f982125376#b761a8a282198f3109b6cdd29b1675f982125376"
 dependencies = [
  "apkaudio-wireless-kernel",
  "scraper",
@@ -77,12 +77,12 @@ dependencies = [
 [[package]]
 name = "apkaudio-wireless-kernel"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV?rev=a3ef09704bb677f27f1b6353f9450ec38301f272#a3ef09704bb677f27f1b6353f9450ec38301f272"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV?rev=52e568551a2f07fef4ecbfd41c4f3d3718216f53#52e568551a2f07fef4ecbfd41c4f3d3718216f53"
 
 [[package]]
 name = "apkaudio-wireless-soundbase"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase?rev=fe1750683f3bb19cbbb4de6ac456f9c4a6048c5c#fe1750683f3bb19cbbb4de6ac456f9c4a6048c5c"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase?rev=fda307d924c964e334151b957d23af5fff5f6192#fda307d924c964e334151b957d23af5fff5f6192"
 dependencies = [
  "apkaudio-wireless-kernel",
  "csv",
@@ -92,7 +92,7 @@ dependencies = [
 [[package]]
 name = "apkaudio-wireless-soundbase-pdf"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.PDF?rev=170dcf5267286fb5d2110a7f9e5b939118981dff#170dcf5267286fb5d2110a7f9e5b939118981dff"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.PDF?rev=3afa7e1a1d327e93386533da32ddca7e2cf17180#3afa7e1a1d327e93386533da32ddca7e2cf17180"
 dependencies = [
  "apkaudio-wireless-kernel",
  "apkaudio-wireless-soundbase",
@@ -102,7 +102,7 @@ dependencies = [
 [[package]]
 name = "apkaudio-wireless-wwb"
 version = "2.0.0"
-source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench?rev=7745b40e555b9792b626bfa7ecb1b7343d722213#7745b40e555b9792b626bfa7ecb1b7343d722213"
+source = "git+https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench?rev=8d82f66561057e59f7f8cc2067d576c842abfe99#8d82f66561057e59f7f8cc2067d576c842abfe99"
 dependencies = [
  "apkaudio-wireless-kernel",
  "serde",
