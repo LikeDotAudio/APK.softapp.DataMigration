@@ -64,6 +64,8 @@ Rebuild the node image (`up-stack.sh` for NODE.BareMetal). Push and pointer bump
 From this repository's own commits (the commit message is the record):
 
 - pin sdk-v2.4 and the providers re-released on it (ROAD-3731: contracts 2.4.0 published) (`269c092`)
+- wiki: lanes, README and smoke result refreshed (wiki.py + smoke.py) (`3775e4a`)
+- docs(smoke): pass — results in the wiki (`c13d7cb`)
 
 ## Releases
 - **Released `2.0.0`, tag `v2.0.0`** (2026-11-01, ROAD-3452, the owner's V2) — no SDK pin; every manifest says 2.0.0; GitHub release `v2.0.0`.
