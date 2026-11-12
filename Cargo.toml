@@ -39,10 +39,10 @@ name = "apkaudio_data_migration"
 path = "mod.rs"
 
 [dependencies]
-apkaudio-wireless-ias = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS", rev = "c8d39b5d09cf99fca457b7814ed2bb21aec65ae4" }
-apkaudio-wireless-soundbase = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase", rev = "2edbf972c99ac3ae67f8fb59326770a90a3a55cd" }
-apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench", rev = "92583f67d565a04ee46aad4ee7116113db692af9" }
-apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "d5022f2de42b54ee83349d7fbc9802d0cccb1559" }
+apkaudio-wireless-ias = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.IAS", rev = "efbc74fa28dbeed93714f04658b1322366e0bd29" }
+apkaudio-wireless-soundbase = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SOUNDbase", rev = "4a7125d6f1a3b85ceb99484e81aed6f06d6d1083" }
+apkaudio-wireless-wwb = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.SHUREwirelessWorkbench", rev = "cabdf322694e5855b34f0da1aa91d4a91db4bd08" }
+apkaudio-wireless-csv = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.CSV", rev = "235ab6df3eaf8cad3d8b5a01bbc01cb9aa0806bb" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
@@ -51,4 +51,4 @@ serde_json = "1.0"
 # the PDF importer's record too. Not re-exported — a dev-dependency never
 # reaches NODE.BareMetal's Core, which depends on this crate by rev.
 [dev-dependencies]
-apkaudio-wireless-soundbase-pdf = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.PDF", rev = "c12fa9edc13c8b095b8046bf5c145f72b940db08" }
+apkaudio-wireless-soundbase-pdf = { git = "https://github.com/LikeDotAudio/APK.softapp.DATATYPE.wireless.PDF", rev = "dfecac398b0e0b613ace9bf6de07c77f800488b0" }
